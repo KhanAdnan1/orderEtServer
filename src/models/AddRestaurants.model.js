@@ -3,8 +3,27 @@ import mongoose, { Schema } from "mongoose";
 const addRestaurantsSchema= new mongoose.Schema(
     {
 
-
-        //Write the remaining schema above
+        // Fields for the restaurant
+        RestaurantManagerName: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        RestaurantName: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        ManagerContact: {
+            type: Number,
+            required: true,
+            trim: true
+        },
+        RestaurantAddress: {
+            type: String,
+            required: true,
+            trim: true
+        },
         restaurantAddedBy:{
             type:Schema.Types.ObjectId,
             ref:"SalesPerson"
