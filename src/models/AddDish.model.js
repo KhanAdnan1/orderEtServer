@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 
 // AddDish schema
 const addDishSchema = new mongoose.Schema(
@@ -16,7 +16,8 @@ const addDishSchema = new mongoose.Schema(
         },
         dishPrice: {
             type: Number,
-            default: 0
+            default: 0,
+            trim: true
         },
         
         // Reference to the Restaurant model

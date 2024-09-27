@@ -2,17 +2,17 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const salesPersonSchema = new mongoose.Schema9(
+const salesPersonSchema = new mongoose.Schema(
     {
         email: {
-            typpe: String,
+            type: String,
             required: true,
             unique: true,
             trim: true,
             lowercase: true
         },
         salesPersonNumber: {
-            typpe: Number,
+            type: Number,
             required: true,
             unique: true,
             trim: true,
