@@ -3,6 +3,8 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
+
+
 // Controller to register a new restaurant
 const registerRestaurant = asyncHandler(async (req, res) => {
     const { RestaurantManagerName, RestaurantName, ManagerContact, RestaurantAddress, restaurantAddedBy } = req.body;
@@ -10,7 +12,9 @@ const registerRestaurant = asyncHandler(async (req, res) => {
     console.log(RestaurantName, RestaurantManagerName);
 
     // Validate if all required fields are provided
-    if ([RestaurantManagerName, RestaurantName, ManagerContact, RestaurantAddress, restaurantAddedBy].some(field => field?.trim() === "")) {
+    if (
+        [RestaurantManagerName, RestaurantName, ManagerContact, RestaurantAddress, restaurantAddedBy].some((field) => 
+        field?.trim() === "")) {
         throw new ApiError(400, "All fields are required");
     }
 

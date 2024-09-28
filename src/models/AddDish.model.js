@@ -22,7 +22,7 @@ const addDishSchema = new mongoose.Schema(
         
         // Reference to the Restaurant model
         disOfTheRestaurant: {
-            type: Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "Restaurant",
             required: true
         }

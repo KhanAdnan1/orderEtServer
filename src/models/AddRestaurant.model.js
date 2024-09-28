@@ -25,7 +25,7 @@ const addRestaurantsSchema= new mongoose.Schema(
             trim: true
         },
         restaurantAddedBy:{
-            type:Schema.Types.ObjectId,
+            type:mongoose.Schema.Types.ObjectId,
             ref:"SalesPerson"
         }
 
