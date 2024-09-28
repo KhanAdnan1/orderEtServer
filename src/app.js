@@ -14,7 +14,9 @@ app.use(express.static("public"))
 
 //import routes
 import salesPersonRegisterRouter from "./routes/salesPerson.routes.js";
+import restaurantRoutes from './routes/restaurantRoutes.js';
 
 //routes declaration
 app.use("/sales",salesPersonRegisterRouter)
+app.use('/restaurants', restaurantRoutes)
 export default app;
