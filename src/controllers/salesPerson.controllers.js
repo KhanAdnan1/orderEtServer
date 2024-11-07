@@ -43,8 +43,4 @@ const registerSalesPerson = asyncHandler(async (req, res) => {
         new ApiResponse(200, createdSalesPerson, "User register successfully")
     )
 })
-
-
-
-
 export { registerSalesPerson }
