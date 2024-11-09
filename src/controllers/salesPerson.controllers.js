@@ -7,7 +7,7 @@ import ApiResponse from "../utils/ApiResponse.js";
 const registerSalesPerson = asyncHandler(async (req, res) => {
     const { email, salesPersonNumber, salesPersonName, userName, password } = req.body;
 
-    console.log(email, salesPersonNumber)
+    console.log(email, salesPersonNumber,salesPersonName, userName, password)
     if (
         [email, salesPersonNumber, salesPersonName, userName, password].some((field) =>
             field?.trim() === "")
@@ -43,8 +43,4 @@ const registerSalesPerson = asyncHandler(async (req, res) => {
         new ApiResponse(200, createdSalesPerson, "User register successfully")
     )
 })
-
-
-
-
 export { registerSalesPerson }
