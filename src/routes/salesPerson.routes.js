@@ -1,9 +1,13 @@
 import { Router } from "express";
 
-import { registerSalesPerson } from "../controllers/salesPerson.controllers.js";
+import {
+  registerSalesPerson,
+  loginSalesPerson,
+} from "../controllers/salesPerson.controllers.js";
 
-const router = Router()
+const router = Router();
 
-router.route("/register").post(registerSalesPerson)
+router.route("/register").post(registerSalesPerson);
+router.route("/login").post(loginSalesPerson);
 
 export default router;

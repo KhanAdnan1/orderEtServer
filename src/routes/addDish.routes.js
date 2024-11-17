@@ -1,5 +1,5 @@
 import express from "express";
-import {registerDish} from "../controllers/addDish.controller";
+import { registerDish } from "../controllers/addDish.controller.js";
 
 const router = express.Router();
 
