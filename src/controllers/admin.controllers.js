@@ -59,47 +59,45 @@ const adminRegister = asyncHandler(async (req, res) => {
 const adminLogin = asyncHandler(async (req, res) => {
     let { userName, password } = req.body;
 
-
     if (!userName) {
-        throw new ApiError(400, "Username and password is required")
+        return res.status(400).json({ message: "Username and password are required" });
     }
 
-    const admin = await Admin.findOne({ userName })
+    const admin = await Admin.findOne({ userName });
 
     if (!admin) {
-        throw new ApiError(404, "Invalid user credentials")
+        return res.status(404).json({ message: "Invalid user credentials" });
     }
 
-    const isPasswordValid = await admin.isPasswordCorrect(password)
+    const isPasswordValid = await admin.isPasswordCorrect(password);
 
     if (!isPasswordValid) {
-        throw new ApiError(400, "Invalid user credentials")
+        return res.status(400).json({ message: "Invalid user credentials" });
     }
 
-    const { accessToken, refreshToken } = await generateAccessTokenAndRefreshToken(admin._id)
+    const { accessToken, refreshToken } = await generateAccessTokenAndRefreshToken(admin._id);
 
-    const loggedInAdmin = await Admin.findById(admin._id).
-        select("-password -refreshToken")
+    const loggedInAdmin = await Admin.findById(admin._id).select("-password -refreshToken");
 
     const options = {
         httpOnly: true,
         secure: true
-    }
+    };
 
     return res
         .status(200)
         .cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options)
-        .json(
-            new ApiResponse(
-                200,
-                {
-                    admin: loggedInAdmin, accessToken, refreshToken
-                },
-                "Admin logged in  successfully"
-            )
-        )
-})
+        .json({
+            status: 200,
+            data: {
+                admin: loggedInAdmin,
+                accessToken,
+                refreshToken
+            },
+            message: "Admin logged in successfully"
+        });
+});
 
 const adminLogout = asyncHandler(async (req, res) => {
 
