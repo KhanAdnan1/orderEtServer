@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { adminLogin, adminLogout, adminRegister } from '../controllers/admin.controllers.js';
-import { verifyJWT } from '../middlewares/auth.middleware.js';
+import { verifyJWT } from '../middlewares/adminAuth.middleware.js';
 
 const router = express.Router();
 

@@ -22,7 +22,7 @@ const salesPersonSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    username: {
+    userName: {
       type: String,
       required: true,
       unique: true,
@@ -48,17 +48,17 @@ salesPersonSchema.pre("save", async function (next) {
   next();
 });
 
-salesPersonSchema.method.isPasswordCorrect = async function (password) {
+salesPersonSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
-salesPersonSchema.method.generateAccessToken = async function () {
-  return await jwt.sign(
+salesPersonSchema.methods.generateAccessToken =  function () {
+  return  jwt.sign(
     {
       _id: this._id,
       email: this.email,
       salesPersonNumber: this.salesPersonNumber,
       salesPersonName: this.salesPersonName,
-      username: this.username,
+      userName: this.userName,
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
@@ -66,7 +66,7 @@ salesPersonSchema.method.generateAccessToken = async function () {
     }
   );
 };
-salesPersonSchema.method.generateRefreshToken = async function () {
+salesPersonSchema.methods.generateRefreshToken =  function () {
   return jwt.sign(
     {
       _id: this._id,

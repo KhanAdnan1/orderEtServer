@@ -58,7 +58,7 @@ const adminRegister = asyncHandler(async (req, res) => {
 
 const adminLogin = asyncHandler(async (req, res) => {
     let { userName, password } = req.body;
-
+    console.log(userName)
 
     if (!userName) {
         throw new ApiError(400, "Username and password is required")
