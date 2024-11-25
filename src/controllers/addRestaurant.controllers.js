@@ -3,11 +3,21 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
+
 const registerRestaurant = asyncHandler(async (req, res) => {
-    const { RestaurantManagerName, RestaurantName, ManagerContact, RestaurantAddress, restaurantAddedBy } = req.body;
+    const {
+        RestaurantManagerName,
+        RestaurantName,
+        ManagerContact,
+        RestaurantAddress,
+        restaurantAddedBy
+    } = req.body;
+    if (!restaurantAddedBy) {
+        throw new ApiError(401, "Unauthorized: User information is missing");
+    }
+    console.log("restaurant added by: ", restaurantAddedBy);
 
     console.log(RestaurantName, RestaurantManagerName, restaurantAddedBy);
-
     if (
         [RestaurantManagerName, RestaurantName, ManagerContact, RestaurantAddress, restaurantAddedBy].some((field) =>
             field?.trim() === "")) {
@@ -20,20 +30,19 @@ const registerRestaurant = asyncHandler(async (req, res) => {
         RestaurantName,
         ManagerContact,
         RestaurantAddress,
-        restaurantAddedBy  // Make sure this value is correctly passed from the frontend
+        restaurantAddedBy  
     });
 
-    // Fetch the newly created restaurant and populate 'restaurantAddedBy' with sales person's name
     const createdRestaurant = await Restaurant.findById(restaurant._id).populate('restaurantAddedBy', 'salesPersonName');
-
     if (!createdRestaurant) {
         throw new ApiError(500, "Something went wrong while adding the restaurant");
     }
 
-    // Return a successful response
-    return res.status(200).json(
-        new ApiResponse(200, createdRestaurant, "Restaurant added successfully")
-    );
+    return res
+        .status(201)
+        .json(
+            new ApiResponse(200, createdRestaurant, "Restaurant added successfully")
+        );
 });
 
 export { registerRestaurant };
