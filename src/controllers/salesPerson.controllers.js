@@ -4,8 +4,6 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
-
-
 // // Login function to authenticate salesperson
 // const loginSalesPerson = asyncHandler(async (req, res) => {
 //   const { username, password } = req.body;
@@ -42,23 +40,22 @@ import ApiResponse from "../utils/ApiResponse.js";
 //     .json(new ApiResponse(200, { token }, "Login successful"));
 // });
 
-
 const generateAccessTokenAndRefreshToken = async (salesPersonID) => {
   try {
-      const salesPerson = await SalesPerson.findById(salesPersonID)
-      const accessToken = salesPerson.generateAccessToken()
-      const refreshToken = salesPerson.generateRefreshToken()
+    const salesPerson = await SalesPerson.findById(salesPersonID);
+    const accessToken = salesPerson.generateAccessToken();
 
-      salesPerson.refreshToken = refreshToken
+    const refreshToken = salesPerson.generateRefreshToken();
 
-      await salesPerson.save({ validateBeforeSave: false })
+    salesPerson.refreshToken = refreshToken;
 
-      return { accessToken, refreshToken }
+    await salesPerson.save({ validateBeforeSave: false });
 
+    return { accessToken, refreshToken };
   } catch (error) {
-      throw new ApiError(500, "Something went wrong ")
+    throw new ApiError(500, "Something went wrong ");
   }
-}
+};
 const registerSalesPerson = asyncHandler(async (req, res) => {
   const { email, salesPersonNumber, salesPersonName, userName, password } =
     req.body;
@@ -102,78 +99,76 @@ const registerSalesPerson = asyncHandler(async (req, res) => {
     );
 });
 
-
 const loginSalesPerson = asyncHandler(async (req, res) => {
   let { userName, password } = req.body;
-  console.log(userName)
+  console.log(userName);
 
   if (!userName) {
-      throw new ApiError(400, "Username and password is required")
+    throw new ApiError(400, "Username and password is required");
   }
 
-  const salesPerson = await SalesPerson.findOne({ userName })
+  const salesPerson = await SalesPerson.findOne({ userName });
 
   if (!salesPerson) {
-      throw new ApiError(404, "Invalid user credentials")
+    throw new ApiError(404, "Invalid user credentials");
   }
 
-  const isPasswordValid = await salesPerson.isPasswordCorrect(password)
+  const isPasswordValid = await salesPerson.isPasswordCorrect(password);
 
   if (!isPasswordValid) {
-      throw new ApiError(400, "Invalid user credentials")
+    throw new ApiError(400, "Invalid user credentials");
   }
 
-  const { accessToken, refreshToken } = await generateAccessTokenAndRefreshToken(salesPerson._id)
+  const { accessToken, refreshToken } =
+    await generateAccessTokenAndRefreshToken(salesPerson._id);
 
-  const loggedInsalesPerson = await SalesPerson.findById(salesPerson._id).
-      select("-password -refreshToken")
+  const loggedInsalesPerson = await SalesPerson.findById(
+    salesPerson._id
+  ).select("-password -refreshToken");
 
   const options = {
-      httpOnly: true,
-      secure: true
-  }
+    httpOnly: true,
+    secure: true,
+  };
 
   return res
-      .status(200)
-      .cookie("accessToken", accessToken, options)
-      .cookie("refreshToken", refreshToken, options)
-      .json(
-          new ApiResponse(
-              200,
-              {
-                //salesPerson: loggedInsalesPerson, accessToken, refreshToken
-                loggedInsalesPerson: loggedInsalesPerson
-              },
-              "Admin logged in  successfully"
-          )
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          //salesPerson: loggedInsalesPerson, accessToken, refreshToken
+          loggedInsalesPerson: loggedInsalesPerson,
+        },
+        "Admin logged in  successfully"
       )
-})
+    );
+});
 
-const salesPesonLogout= asyncHandler(async (req, res)=>{
+const salesPesonLogout = asyncHandler(async (req, res) => {
   await SalesPerson.findByIdAndUpdate(
     req.salesPerson._id,
     {
-        $unset: {
-            refreshToken: 1
-        }
+      $unset: {
+        refreshToken: 1,
+      },
     },
     {
-        new: true
+      new: true,
     }
-)
-const options = {
+  );
+  const options = {
     httpOnly: true,
-    secure: true
-}
+    secure: true,
+  };
 
-return res
+  return res
     .status(200)
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
-    .json(
-        new ApiResponse(200, {}, "Sucessfully  logout")
-    )
+    .json(new ApiResponse(200, {}, "Sucessfully  logout"));
+});
 
-})
-
-export { registerSalesPerson, loginSalesPerson,salesPesonLogout };
+export { registerSalesPerson, loginSalesPerson, salesPesonLogout };

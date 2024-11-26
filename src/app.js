@@ -1,8 +1,8 @@
-import express from "express"
-import cors from "cors"
-import cookieParser from "cookie-parser"
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
-const app = express()
+const app = express();
 
 //app.use(cors());
 const corsOptions = {
@@ -29,8 +29,4 @@ app.use("/sales", salesPersonRouter);
 app.use("/restaurants", restaurantRoutes);
 app.use("/dishes", dishRoutes);
 app.use("/admin", adminRoutes);
-app.use("/admin", adminRoutes);
-app.use("/admin", adminRoutes);
 export default app;
-
-
