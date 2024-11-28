@@ -41,4 +41,20 @@ const registerDish = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, dish, "Dish added successfully"));
 });
 
-export { registerDish };
+// Controller to get all dishes for a specific restaurant
+const getDishesByRestaurant = asyncHandler(async (req, res) => {
+  const { restaurantID } = req.params;
+
+  // Fetch all dishes belonging to the restaurant
+  const dishes = await Dish.find({ dishOfTheRestaurant: restaurantID });
+
+  //   if (!dishes || dishes.length === 0) {
+  //     throw new ApiError(404, "No dishes found for this restaurant");
+  //   }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, dishes, "Dishes fetched successfully"));
+});
+
+export { registerDish, getDishesByRestaurant };
