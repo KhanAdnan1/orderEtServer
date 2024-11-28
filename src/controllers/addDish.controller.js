@@ -4,30 +4,41 @@ import ApiResponse from "../utils/ApiResponse.js";
 import { Dish } from "../models/AddDish.model.js";
 
 //Controller to regsiter a new Dish
-const registerDish = asyncHandler(async (req,res) => {
-    const {dishName,dishCategory,dishPrice,dishOfTheRestaurant}=req.body;
+const registerDish = asyncHandler(async (req, res) => {
+  const { dishName, dishCategory, dishPrice, dishOfTheRestaurant } = req.body;
 
-    console.log(dishName,dishOfTheRestaurant);
+  console.log(dishName, dishOfTheRestaurant);
 
-    //Validate if all required fields are provided
-    if (
-        [dishName,dishCategory,dishPrice,dishOfTheRestaurant].some((field) =>
-        field?.trim() === "")) {
-        throw new ApiError(400,"All fields are required");
-    }
+  //Validate if all required fields are provided
+  if (
+    [dishName, dishCategory, dishPrice, dishOfTheRestaurant].some(
+      (field) => field?.trim() === ""
+    )
+  ) {
+    throw new ApiError(400, "All fields are required");
+  }
 
-    //Create a new Dish in the database
-    const dish = await Dish.create({
-        dishName,
-        dishCategory,
-        dishPrice,
-        dishOfTheRestaurant
-    });
+  const existingDish = await Dish.findOne({
+    dishName: dishName.trim(),
+    dishOfTheRestaurant,
+  });
 
-    // Return a successful response
-    return res.status(200).json(
-        new ApiResponse(200, dish, "Dish added successfully")
-    );
+  if (existingDish) {
+    throw new ApiError(409, "Dish already exists for this restaurant");
+  }
+
+  //Create a new Dish in the database
+  const dish = await Dish.create({
+    dishName,
+    dishCategory,
+    dishPrice,
+    dishOfTheRestaurant,
+  });
+
+  // Return a successful response
+  return res
+    .status(200)
+    .json(new ApiResponse(200, dish, "Dish added successfully"));
 });
 
-export {registerDish};
+export { registerDish };
