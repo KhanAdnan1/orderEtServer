@@ -171,4 +171,29 @@ const salesPesonLogout = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Sucessfully  logout"));
 });
 
-export { registerSalesPerson, loginSalesPerson, salesPesonLogout };
+const getAllSalesperson = asyncHandler(async (req, res) => {
+  try {
+    const salespersons = await SalesPerson.find(
+      {},
+      { password: 0, refreshToken: 0 }
+    );
+    res.status(200).json({
+      success: true,
+      data: salespersons,
+    });
+  } catch (error) {
+    console.error("Error fetching salespersons:", error);
+    res.status(500).json({
+      success: false,
+      message: "Unable to fetch salespersons.",
+      error: error.message,
+    });
+  }
+});
+
+export {
+  registerSalesPerson,
+  loginSalesPerson,
+  salesPesonLogout,
+  getAllSalesperson,
+};
