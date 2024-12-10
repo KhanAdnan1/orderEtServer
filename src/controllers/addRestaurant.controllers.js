@@ -70,7 +70,7 @@ const getRestaurants = asyncHandler(async (req, res) => {
   }).sort({
     createdAt: -1,
   });
-  console.log(restaurants);
+ // console.log(restaurants);
   if (restaurants.length === 0) {
     return res.status(404).json({ message: "No restaurants found" });
   }
