@@ -1,4 +1,5 @@
 import { Restaurant } from "../models/AddRestaurant.model.js";
+import { SalesPerson } from "../models/SalesPerson.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
@@ -83,4 +84,24 @@ const getRestaurants = asyncHandler(async (req, res) => {
   });
 });
 
-export { registerRestaurant, getRestaurants };
+const getAllRestaurants = asyncHandler(async (req, res) => {
+  try {
+    const restaurants = await Restaurant.find()
+      .populate("restaurantAddedBy", "salesPersonName salesPersonNumber email")
+      .exec();
+
+    res.status(200).json({
+      success: true,
+      message: "Restaurants fetched successfully",
+      data: restaurants,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch restaurants",
+      error: error.message,
+    });
+  }
+});
+
+export { registerRestaurant, getRestaurants, getAllRestaurants };
