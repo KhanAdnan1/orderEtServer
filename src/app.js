@@ -24,11 +24,13 @@ import restaurantRoutes from "./routes/addRestaurant.routes.js";
 import dishRoutes from "./routes/addDish.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import addCategoryRoutes from "./routes/addCategory.routes.js";
-
+import SubscriptionsRoutes from "./routes/SubscriptionsPlans.routes.js"
 //routes declaration
 app.use("/categories", addCategoryRoutes);
 app.use("/sales", salesPersonRouter);
 app.use("/restaurants", restaurantRoutes);
 app.use("/dishes", dishRoutes);
 app.use("/admin", adminRoutes);
+app.use("/add",SubscriptionsRoutes)
+app.use("/upgrade",restaurantRoutes)
 export default app;
