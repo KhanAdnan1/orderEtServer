@@ -2,6 +2,8 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import { Dish } from "../models/AddDish.model.js";
+import uploadOnCloudinary from "../utils/imageUpload.js";
+import fs from "fs";
 
 //Controller to regsiter a new Dish
 const registerDish = asyncHandler(async (req, res) => {
@@ -26,12 +28,38 @@ const registerDish = asyncHandler(async (req, res) => {
   if (existingDish) {
     throw new ApiError(409, "Dish already exists for this restaurant");
   }
+  const uploadedImages = [];
+  const dishImageFiles = req.files?.dishImage; // Accessing uploaded files
+
+  if (!dishImageFiles || dishImageFiles.length === 0) {
+    throw new ApiError(404, "At least one dish image is required");
+  }
+
+  for (const file of dishImageFiles) {
+    const dishImageLocalPath = file.path;
+
+    // Upload to Cloudinary
+    const uploadedImage = await uploadOnCloudinary(dishImageLocalPath);
+
+    if (uploadedImage) {
+      uploadedImages.push(uploadedImage.url); // Store the Cloudinary URL
+      fs.unlinkSync(dishImageLocalPath); // Remove the local file after upload
+    } else {
+      throw new ApiError(500, "Failed to upload one or more images");
+    }
+  }
+
+  if (uploadedImages.length === 0) {
+    throw new ApiError(500, "No images were successfully uploaded");
+  }
+
 
   //Create a new Dish in the database
   const dish = await Dish.create({
     dishName,
     dishCategory,
     dishPrice,
+    dishImage:uploadedImages,
     dishOfTheRestaurant,
   });
 

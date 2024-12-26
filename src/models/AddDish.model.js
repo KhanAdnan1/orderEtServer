@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+
 // AddDish schema
 const addDishSchema = new mongoose.Schema(
   {
@@ -20,6 +21,10 @@ const addDishSchema = new mongoose.Schema(
       trim: true,
     },
 
+    dishImage: {
+      type: [String], // Allow array of strings for multiple image URLs
+      required: true,
+    },
     // Reference to the Restaurant model
     dishOfTheRestaurant: {
       type: mongoose.Schema.Types.ObjectId,
