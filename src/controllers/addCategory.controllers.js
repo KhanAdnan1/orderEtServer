@@ -44,3 +44,25 @@ export const getCategoriesForRestaurant = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch categories." });
   }
 };
+
+//removing a category
+export const removeCategory = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    throw new ApiError(400, "Category ID is required");
+  }
+
+  // Find and delete the category
+  const category = await Category.findByIdAndDelete(id);
+
+  if (!category) {
+    throw new ApiError(404, "Category not found");
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "Category removed successfully",
+    data: category,
+  });
+};
