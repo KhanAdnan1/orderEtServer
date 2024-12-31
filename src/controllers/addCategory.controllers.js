@@ -46,23 +46,31 @@ export const getCategoriesForRestaurant = async (req, res) => {
 };
 
 //removing a category
+
 export const removeCategory = async (req, res) => {
-  const { id } = req.params;
+  const { restaurantID, categoryName } = req.params;
 
-  if (!id) {
-    throw new ApiError(400, "Category ID is required");
+  if (!categoryName) {
+    return res.status(400).json({ message: "Category name is required." });
   }
 
-  // Find and delete the category
-  const category = await Category.findByIdAndDelete(id);
+  try {
+    const updatedRestaurant = await Restaurant.findByIdAndUpdate(
+      restaurantID,
+      { $pull: { categories: categoryName } },
+      { new: true }
+    );
 
-  if (!category) {
-    throw new ApiError(404, "Category not found");
+    if (!updatedRestaurant) {
+      return res.status(404).json({ message: "Restaurant not found." });
+    }
+
+    res.status(200).json({
+      message: "Category removed successfully.",
+      updatedRestaurant,
+    });
+  } catch (error) {
+    console.error("Error removing category:", error);
+    res.status(500).json({ message: "Failed to remove category." });
   }
-
-  return res.status(200).json({
-    success: true,
-    message: "Category removed successfully",
-    data: category,
-  });
 };

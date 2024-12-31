@@ -11,6 +11,6 @@ router.post("/:restaurantID/add-category", addCategoryToRestaurant);
 router.get("/:restaurantId", getCategoriesForRestaurant);
 
 //removing a category
-router.delete("/delete/:id", removeCategory);
+router.delete("/delete/:restaurantID/:categoryName", removeCategory);
 
 export default router;
