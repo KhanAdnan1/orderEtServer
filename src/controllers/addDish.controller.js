@@ -53,13 +53,12 @@ const registerDish = asyncHandler(async (req, res) => {
     throw new ApiError(500, "No images were successfully uploaded");
   }
 
-
   //Create a new Dish in the database
   const dish = await Dish.create({
     dishName,
     dishCategory,
     dishPrice,
-    dishImage:uploadedImages,
+    dishImage: uploadedImages,
     dishOfTheRestaurant,
   });
 
@@ -85,4 +84,26 @@ const getDishesByRestaurant = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, dishes, "Dishes fetched successfully"));
 });
 
-export { registerDish, getDishesByRestaurant };
+//controller to delete a dish
+const removeDish = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    throw new ApiError(400, "Dish ID is required");
+  }
+
+  // Find and remove the dish
+  const dish = await Dish.findByIdAndDelete(id);
+
+  if (!dish) {
+    throw new ApiError(404, "Dish not found");
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "Dish removed successfully",
+    data: dish,
+  });
+});
+
+export { registerDish, getDishesByRestaurant, removeDish };
