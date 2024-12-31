@@ -67,7 +67,10 @@ const registerRestaurant = asyncHandler(async (req, res) => {
   } = req.body;
 
   if (!restaurantAddedBy || !planId) {
-    throw new ApiError(401, "Missing required information: planId or restaurantAddedBy");
+    throw new ApiError(
+      401,
+      "Missing required information: planId or restaurantAddedBy"
+    );
   }
 
   // Check if any field is empty
@@ -123,20 +126,25 @@ const registerRestaurant = asyncHandler(async (req, res) => {
   // Format dates to DD-MM-YYYY
   const formatDate = (date) => {
     const d = new Date(date);
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0"); // Months are zero-based
     const year = d.getFullYear();
     return `${day}-${month}-${year}`;
   };
 
-  createdRestaurant.subscription.startDate = formatDate(createdRestaurant.subscription.startDate);
-  createdRestaurant.subscription.endDate = formatDate(createdRestaurant.subscription.endDate);
+  createdRestaurant.subscription.startDate = formatDate(
+    createdRestaurant.subscription.startDate
+  );
+  createdRestaurant.subscription.endDate = formatDate(
+    createdRestaurant.subscription.endDate
+  );
 
   return res
     .status(201)
-    .json(new ApiResponse(200, createdRestaurant, "Restaurant added successfully"));
+    .json(
+      new ApiResponse(200, createdRestaurant, "Restaurant added successfully")
+    );
 });
-
 
 const upgradePlan = asyncHandler(async (req, res) => {
   const { restaurantId, planId } = req.body;
@@ -160,7 +168,10 @@ const upgradePlan = asyncHandler(async (req, res) => {
   // Retrieve the additional months from the plan
   const additionalMonths = plan.month; // Assuming the plan schema has a 'month' field
   if (!additionalMonths || additionalMonths <= 0) {
-    throw new ApiError(400, "The selected plan does not have a valid duration.");
+    throw new ApiError(
+      400,
+      "The selected plan does not have a valid duration."
+    );
   }
 
   // Extend the current end date
@@ -197,9 +208,6 @@ const upgradePlan = asyncHandler(async (req, res) => {
     )
   );
 });
-
-
-
 
 // Controller to fetch restaurants for the current user
 const getRestaurants = asyncHandler(async (req, res) => {
@@ -250,4 +258,26 @@ const getAllRestaurants = asyncHandler(async (req, res) => {
   }
 });
 
-export { registerRestaurant, getRestaurants, getAllRestaurants,upgradePlan };
+const removeRestaurant = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, "Invalid restaurant ID");
+  }
+  const deletedRestaurant = await Restaurant.findByIdAndDelete(id);
+
+  if (!deletedRestaurant) {
+    throw new ApiError(404, "Restaurant not found");
+  }
+  res
+    .status(200)
+    .json(new ApiResponse(200, { id }, "Restaurant deleted successfully"));
+});
+
+export {
+  registerRestaurant,
+  getRestaurants,
+  getAllRestaurants,
+  upgradePlan,
+  removeRestaurant,
+};

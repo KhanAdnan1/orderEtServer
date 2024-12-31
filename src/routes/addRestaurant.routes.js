@@ -4,14 +4,18 @@ import {
   registerRestaurant,
   getRestaurants,
   getAllRestaurants,
-  upgradePlan
+  upgradePlan,
+  removeRestaurant,
 } from "../controllers/addRestaurant.controllers.js"; // Adjust path if necessary
 //import { verifyToken } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 router.post("/register", registerRestaurant);
-router.put("/plans",upgradePlan)
+router.put("/plans", upgradePlan);
+
+// DELETE: Remove a restaurant
+router.delete("/delete/:id", removeRestaurant);
 
 // GET: Fetch all restaurants for the current user
 router.get("/", getRestaurants);
