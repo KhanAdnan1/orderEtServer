@@ -5,6 +5,8 @@ import {
   loginSalesPerson,
   salesPesonLogout,
   getAllSalesperson,
+  changeSalesPersonPassword,
+  toggleSalesPersonAccess,
 } from "../controllers/salesPerson.controllers.js";
 import { verifyJWT } from "../middlewares/salesPersonAuth.middleware.js";
 
@@ -20,5 +22,9 @@ router.post("/register", registerSalesPerson);
 router.post("/logout", verifyJWT, salesPesonLogout);
 
 router.get("/fetch", getAllSalesperson);
+
+router.put("/change-password", verifyJWT, changeSalesPersonPassword);
+
+router.put("/toggle-access/:id", toggleSalesPersonAccess);
 
 export default router;

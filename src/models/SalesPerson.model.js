@@ -35,6 +35,10 @@ const salesPersonSchema = new mongoose.Schema(
     refreshToken: {
       type: String,
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,
@@ -51,8 +55,8 @@ salesPersonSchema.pre("save", async function (next) {
 salesPersonSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
-salesPersonSchema.methods.generateAccessToken =  function () {
-  return  jwt.sign(
+salesPersonSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
     {
       _id: this._id,
       email: this.email,
@@ -66,7 +70,7 @@ salesPersonSchema.methods.generateAccessToken =  function () {
     }
   );
 };
-salesPersonSchema.methods.generateRefreshToken =  function () {
+salesPersonSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
       _id: this._id,

@@ -109,6 +109,12 @@ const loginSalesPerson = asyncHandler(async (req, res) => {
 
   const salesPerson = await SalesPerson.findOne({ userName });
 
+  if (!salesPerson.isActive) {
+    throw new ApiError(
+      403,
+      "Your account is disabled. Please contact the admin."
+    );
+  }
   if (!salesPerson) {
     throw new ApiError(404, "Invalid user credentials");
   }
@@ -196,4 +202,5 @@ export {
   loginSalesPerson,
   salesPesonLogout,
   getAllSalesperson,
+  toggleSalesPersonAccess,
 };
