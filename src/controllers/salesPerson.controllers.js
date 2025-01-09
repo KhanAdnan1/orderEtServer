@@ -191,9 +191,38 @@ const getAllSalesperson = asyncHandler(async (req, res) => {
   }
 });
 
+const changeSalesPersonPassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    throw new ApiError(400, "Both current and new passwords are required");
+  }
+
+  const salesPerson = await SalesPerson.findById(req.salesPerson._id);
+
+  if (!salesPerson) {
+    throw new ApiError(404, "Salesperson not found");
+  }
+
+  const isPasswordValid = await salesPerson.isPasswordCorrect(currentPassword);
+
+  if (!isPasswordValid) {
+    throw new ApiError(400, "Current password is incorrect");
+  }
+
+  // Update and hash the new password
+  salesPerson.password = newPassword;
+  await salesPerson.save();
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Password changed successfully"));
+});
+
 export {
   registerSalesPerson,
   loginSalesPerson,
   salesPesonLogout,
   getAllSalesperson,
+  changeSalesPersonPassword,
 };
