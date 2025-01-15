@@ -197,6 +197,29 @@ const getAllSalesperson = asyncHandler(async (req, res) => {
   }
 });
 
+const toggleSalesPersonAccess = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { isActive } = req.body;
+
+  try {
+    const salesperson = await SalesPerson.findById(id);
+
+    if (!salesperson) {
+      return res.status(404).json({ message: "Salesperson not found" });
+    }
+
+    salesperson.isActive =
+      isActive !== undefined ? isActive : !salesperson.isActive;
+    await salesperson.save();
+
+    res
+      .status(200)
+      .json({ message: "Salesperson access updated", salesperson });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
 export {
   registerSalesPerson,
   loginSalesPerson,
